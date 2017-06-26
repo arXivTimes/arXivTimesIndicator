@@ -1,7 +1,7 @@
 import os
 import numpy as np
 import matplotlib
-matplotlib.use("TkAgg")  # for mac OS
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.image import BboxImage, imread
 from matplotlib.transforms import Bbox
