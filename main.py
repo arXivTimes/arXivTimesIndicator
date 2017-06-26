@@ -4,7 +4,7 @@ from PIL import Image
 
 from arxivtimes_indicator.data.github import filter_issue_by_ym, get_all_issues, get_icon_url, tally_by_labels, tally_by_users
 from arxivtimes_indicator.data.twitter import fetch_tweets, rank_paper
-from arxivtimes_indicator.data.utils import download
+from arxivtimes_indicator.data.utils import download, break_line
 from arxivtimes_indicator.visualization.visualize import save_bar_graph, save_graph_with_icon, save_text_graph
 
 TEMPORARY = 'data'
@@ -30,6 +30,7 @@ def main():
     # Save label and user graph
     label_fig_path = os.path.join(REPORT, 'labels.png')
     users_fig_path = os.path.join(REPORT, 'users.png')
+    label_names = break_line(label_names)
     save_bar_graph(label_names, label_counts, label_fig_path)
     save_graph_with_icon(list(range(len(user_names))), user_counts, images, users_fig_path)
 

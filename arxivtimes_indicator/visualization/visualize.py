@@ -8,6 +8,8 @@ def save_bar_graph(x, y, file_name):
     plt.clf()
     sns.set_style("whitegrid")
     ax = sns.barplot(x=x, y=y)
+    for item in ax.get_xticklabels():
+        item.set_rotation(15)
     plt.savefig(file_name)
 
 
