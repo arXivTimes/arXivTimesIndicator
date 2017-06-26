@@ -1,3 +1,4 @@
+import numpy as np
 import requests
 
 
@@ -19,3 +20,7 @@ def break_line(names):
     }
     names = [table[name] if name in table else name for name in names]
     return names
+
+
+def std_score(a):
+    return np.round_(50 + 10 * (a - np.average(a)) / np.std(a))

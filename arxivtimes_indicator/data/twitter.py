@@ -3,6 +3,8 @@ from datetime import datetime
 
 import tweepy
 
+from arxivtimes_indicator.data.utils import std_score
+
 
 def load_keys():
     consumer_key = os.environ.get('CONSUMER_KEY')
@@ -25,21 +27,24 @@ def fetch_tweets(name='arxivtimes', count=100):
 
 def rank_paper(tweets):
     paper_rank = []
-    now = datetime.now()
+    #now = datetime.now()
     for tweet in tweets:
         if tweet.source != 'IFTTT':
             continue
 
-        created_at = tweet.created_at
-        if now.year == created_at.year and now.month == created_at.month:
-            paper_title = ' '.join(tweet.text.split()[:-1])
-            favorite_count = tweet.favorite_count
-            retweet_count = tweet.retweet_count
-            score = favorite_count + 2 * retweet_count
-            paper_rank.append((score, paper_title))
+        #created_at = tweet.created_at
+        paper_title = ' '.join(tweet.text.split()[:-1])
+        favorite_count = tweet.favorite_count
+        retweet_count = tweet.retweet_count
+        score = favorite_count + 2 * retweet_count
+        paper_rank.append((score, paper_title))
+        #if now.year == created_at.year and now.month == created_at.month:
+        #    paper_rank.append((score, paper_title))
+        #else:
+        #    paper_rank.append((score, paper_title))
 
-    paper_rank.sort(reverse=True)
     scores = [s for s, _ in paper_rank]
     titles = [t for _, t in paper_rank]
+    scores = std_score(scores)
 
     return scores, titles

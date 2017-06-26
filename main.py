@@ -4,7 +4,7 @@ from PIL import Image
 
 from arxivtimes_indicator.data.github import filter_issue_by_ym, get_all_issues, get_icon_url, tally_by_labels, tally_by_users
 from arxivtimes_indicator.data.twitter import fetch_tweets, rank_paper
-from arxivtimes_indicator.data.utils import download, break_line
+from arxivtimes_indicator.data.utils import download, break_line, std_score
 from arxivtimes_indicator.visualization.visualize import save_bar_graph, save_graph_with_icon, save_text_graph
 
 TEMPORARY = 'data'
@@ -40,7 +40,6 @@ def main():
     n = 10  # number of top papers
     scores, titles = rank_paper(tweets)
     scores, titles = scores[:n], titles[:n]
-    scores = [score/sum(scores) for score in scores]
     # Save paper rank graph
     path = os.path.join(REPORT, 'rank.png')
     save_text_graph(titles, scores, path)
