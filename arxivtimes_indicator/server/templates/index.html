@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block head %}
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/vue/2.3.4/vue.min.js"></script>
+<link rel="stylesheet" href="{{ static_url('css/index.css') }}" type="text/css"/>
+{% end %}
+
+{% block body %}
+
+<h1 class="title top" >arXivTimes Indicator</h1>
+
+{% module xsrf_form_html() %}
+{% end %}
+
+{% block bottom %}
+<script type="text/javascript" src="{{ static_url('js/index.js') }}"></script>
+{% end %}
