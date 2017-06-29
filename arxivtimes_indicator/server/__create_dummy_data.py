@@ -23,7 +23,7 @@ def get_arxivtimes_issue():
 
         d = {
             "title": iss["title"],
-            "url": iss["url"],
+            "url": iss["html_url"],
             "user_id": iss["user"]["login"],
             "avatar_url": iss["user"]["avatar_url"],
             "score": scores[i],

@@ -70,7 +70,8 @@ var instance = new Vue({
             return rendered;
         },
         formatDate: function (v) {
-            return v.replace(/T|Z/g, ' ')
+            var date = v.replace(/T|Z/g, " ").split(" ");
+            return date[0];
         }
     }
 })
