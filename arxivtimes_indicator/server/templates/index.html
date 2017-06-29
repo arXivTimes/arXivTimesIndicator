@@ -2,6 +2,7 @@
 
 {% block head %}
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/vue/2.3.4/vue.min.js"></script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/marked/0.3.6/marked.min.js"></script>
 <link rel="stylesheet" href="{{ static_url('css/index.css') }}" type="text/css"/>
 {% end %}
 
@@ -9,9 +10,103 @@
 
 <h1 class="title top" >arXivTimes Indicator</h1>
 
+<div id="app" class="container">
+    <div class="tabs is-centered is-boxed is-medium">
+    <ul>
+        <li v-on:click="activate('all')" v-bind:class="isActive('all')">
+          <a>
+            <span>All</span>
+          </a>
+        </li>
+        <li v-on:click="activate('cv')" v-bind:class="isActive('cv')">
+          <a>
+            <span>&nbsp;</span>
+            <span class="icon is-small"><i class="fa fa-eye"></i></span>
+            <span>&nbsp;</span>
+          </a>
+        </li>
+        <li v-on:click="activate('nlp')" v-bind:class="isActive('nlp')">
+          <a>
+            <span>&nbsp;</span>
+            <span class="icon is-small"><i class="fa fa-commenting-o"></i></span>
+            <span>&nbsp;</span>
+          </a>
+        </li>
+        <li v-on:click="activate('audio')" v-bind:class="isActive('audio')">
+          <a>
+            <span>&nbsp;</span>
+            <span class="icon is-small"><i class="fa fa-volume-up"></i></span>
+            <span>&nbsp;</span>
+          </a>
+        </li>
+        <li v-on:click="activate('rl')" v-bind:class="isActive('rl')">
+          <a>
+            <span>&nbsp;</span>
+            <span class="icon is-small"><i class="fa fa-android"></i></span>
+            <span>&nbsp;</span>
+          </a>
+        </li>
+        <li v-on:click="activate('opt')" v-bind:class="isActive('opt')">
+          <a>
+            <span>&nbsp;</span>
+            <span class="icon is-small"><i class="fa fa-map-o"></i></span>
+            <span>&nbsp;</span>
+          </a>
+        </li>
+    </ul>
+    </div>
+    <div class="columns">
+      <div class="column">
+        <h1 class="title">[[title]]</h1>
+      </div>
+      <div class="column">
+        <div class="field has-addons" style="float:right">
+            <p class="control" >
+                <a v-bind:class="['button', {'is-focused': isRecent}]" v-on:click="toggleList">
+                <span>Recent</span>
+                </a>
+            </p>
+            <p class="control">
+                <a v-bind:class="['button', {'is-focused': !isRecent}]" v-on:click="toggleList">
+                <span>Popular</span>
+                </a>
+            </p>
+        </div>
+        <br style="clear:both"/>
+      </div>
+    </div>
+    <div>
+      <article class="media" v-for="paper in filteredList">
+        <figure class="media-left">
+          <p class="image is-64x64">
+            <img v-bind:src="[[paper.avatar_url]]"/>
+          </p>
+        </figure>
+        <div class="media-content">
+          <div class="content">
+            <p>
+              <a v-bind:href="[[paper.url]]"><strong>[[paper.title]]</strong></a>
+              <br>
+              <span>
+              [[paper.headline | makeHeadline]]
+              </span>
+            </p>
+          </div>
+          <div>
+              <strong>[[paper.score]]pt</strong>
+              <span>[[paper.created_at | formatDate]]</span>
+          </div>
+        </div>
+      </article>
+    </div>
+</div>
+
 {% module xsrf_form_html() %}
 {% end %}
 
 {% block bottom %}
+<script>
+    var PAPERS = {% raw papers %};
+</script>
 <script type="text/javascript" src="{{ static_url('js/index.js') }}"></script>
 {% end %}

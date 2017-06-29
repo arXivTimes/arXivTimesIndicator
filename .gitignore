@@ -103,3 +103,4 @@ ENV/
 .DS_Store
 /data
 /reports
+/arxivtimes_indicator/server/_data

@@ -1,10 +1,29 @@
 import os
+import json
 import tornado.web
 
 
 class IndexHandler(tornado.web.RequestHandler):
     def get(self):
-        self.render("index.html", title="title")
+        is_dummy = self.get_argument("dummy", "")
+        if is_dummy and is_dummy.lower() == "true":
+            is_dummy = True
+        
+        papers = {}
+        if is_dummy:
+            path = os.path.join(os.path.dirname(__file__), "./_data/dummy_data.json")
+            with open(path) as f:
+                issues = json.load(f)
+            papers = {
+                "recent": issues[:20],
+                "popular": issues[-20:],
+            }
+            papers = json.dumps(papers)
+        else:
+            # todo: extract data from url
+            pass
+
+        self.render("index.html", papers=papers)
 
 
 class UserHandler(tornado.web.RequestHandler):
