@@ -1,6 +1,8 @@
 import os
 import unittest
 
+from PIL import Image
+
 from arxivtimes_indicator.visualization.visualize import *
 
 
