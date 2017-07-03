@@ -6,7 +6,7 @@ import requests
 
 
 def get_arxivtimes_issue():
-    url = "https://api.github.com/repos/arXivTimes/arXivTimes/issues"
+    url = "https://api.github.com/repos/arXivTimes/arXivTimes/issues?per_page=120"
     r = requests.get(url)
     issues = r.json()
     if not r.ok:

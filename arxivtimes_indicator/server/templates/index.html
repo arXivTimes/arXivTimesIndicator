@@ -3,6 +3,7 @@
 {% block head %}
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/vue/2.3.4/vue.min.js"></script>
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/marked/0.3.6/marked.min.js"></script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
 <link rel="stylesheet" href="{{ static_url('css/index.css') }}" type="text/css"/>
 {% end %}
 
@@ -10,7 +11,11 @@
 
 <h1 class="title top" >arXivTimes Indicator</h1>
 
-<div id="app" class="container">
+<div style="padding-left:10px; padding-right:10px;height:250px">
+  <canvas id="chart"></canvas>
+</div>
+
+<div id="app" class="container" v-cloak>
     <div class="tabs is-centered is-boxed is-medium">
     <ul>
         <li v-on:click="activate('all')" v-bind:class="isActive('all')">
@@ -79,13 +84,13 @@
       <article class="media" v-for="paper in filteredList">
         <figure class="media-left">
           <p class="image is-64x64">
-            <img v-bind:src="[[paper.avatar_url]]"/>
+            <meter v-bind:value="paper.score" low="50" min="0" max="100">paper score</meter>
           </p>
         </figure>
         <div class="media-content">
           <div class="content">
             <p>
-              <a v-bind:href="[[paper.url]]" target="_paper" style="font-size:1.1em">[[paper.title]]</a>
+              <a v-bind:href="paper.url" target="_paper" style="font-size:1.1em">[[paper.title]]</a>
               <br>
               <span>
               [[paper.headline | makeHeadline]]
@@ -93,8 +98,10 @@
             </p>
           </div>
           <div>
-              <strong>[[paper.score]]pt</strong>
+              <img class="user-icon" v-bind:src="paper.avatar_url"/>
+              <a v-bind:href="paper.user_id" style="line-height:1em">[[paper.user_id]]</a>
               <span>[[paper.created_at | formatDate]]</span>
+              <strong>[[paper.score]]pt</strong>
           </div>
         </div>
       </article>
@@ -108,5 +115,7 @@
 <script>
     var PAPERS = {% raw papers %};
 </script>
-<script type="text/javascript" src="{{ static_url('js/index.js') }}"></script>
+<script type="text/javascript" src="{{ static_url('js/global.js') }}"></script>
+<script type="text/javascript" src="{{ static_url('js/indexApp.js') }}"></script>
+<script type="text/javascript" src="{{ static_url('js/indexChart.js') }}"></script>
 {% end %}

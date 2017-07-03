@@ -1,6 +1,7 @@
 import os
 import json
 import tornado.web
+import pandas as pd
 
 
 class IndexHandler(tornado.web.RequestHandler):
@@ -15,14 +16,14 @@ class IndexHandler(tornado.web.RequestHandler):
             with open(path) as f:
                 issues = json.load(f)
             papers = {
-                "recent": issues[:20],
-                "popular": issues[-20:],
+                "recent": issues,
+                "popular": sorted(issues, key=lambda p: p["score"], reverse=True)
             }
             papers = json.dumps(papers)
         else:
             # todo: extract data from url
             pass
-
+        
         self.render("index.html", papers=papers)
 
 

@@ -5,13 +5,8 @@ var instance = new Vue({
         papers: PAPERS,
         selected: "all",
         isRecent: true,
-        labelDict: {
-            "cv": ["ComputerVision"],
-            "nlp": ["NLP", "Dialogue"],
-            "opt": ["Optimization"],
-            "rl": ["ReinforcementLearning"],
-            "audio": ["AudioRecognition", "AudioSynthesis"]
-        }
+        labelToGenre: LABEL_TO_GENRE,
+        genreNames: GENRE_NAMES
     },
     methods: {
         isActive: function(kind){
@@ -26,16 +21,8 @@ var instance = new Vue({
     },
     computed: {
         title: function(){
-            if (this.selected == "cv"){
-                return "Computer Vision";
-            }else if (this.selected == "nlp"){
-                return "Natural Language Processing";
-            }else if (this.selected == "audio"){
-                return "Audio";
-            }else if (this.selected == "rl"){
-                return "Reinforcement Learning";
-            }else if (this.selected == "opt"){
-                return "Optimization";
+            if (this.selected in this.genreNames){
+                return this.genreNames[this.selected];
             }else{
                 return "All Genre";
             }
@@ -46,7 +33,7 @@ var instance = new Vue({
             if(list === undefined){
                 list = [];
             }
-            var targetLabel = this.labelDict[this.selected];
+            var targetLabel = this.labelToGenre[this.selected];
             var filtered = list.filter(function(item){
                 if(targetLabel === undefined){
                     return true;
@@ -75,4 +62,3 @@ var instance = new Vue({
         }
     }
 })
-
