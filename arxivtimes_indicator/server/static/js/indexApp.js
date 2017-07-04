@@ -2,10 +2,9 @@ var instance = new Vue({
     el: "#app",
     delimiters: ["[[", "]]"],
     data: {
-        papers: PAPERS,
+        posts: POSTS,
         selected: "all",
         isRecent: true,
-        labelToGenre: LABEL_TO_GENRE,
         genreNames: GENRE_NAMES
     },
     methods: {
@@ -29,24 +28,16 @@ var instance = new Vue({
         },
         filteredList: function(){
             var listType = this.isRecent ? "recent" : "popular";
-            var list = this.papers[listType];
-            if(list === undefined){
-                list = [];
+            var filtered = this.posts[listType];
+            if(filtered === undefined){
+                filtered = [];
             }
-            var targetLabel = this.labelToGenre[this.selected];
-            var filtered = list.filter(function(item){
-                if(targetLabel === undefined){
-                    return true;
-                }
-                var isTarget = false;
-                for(var i = 0; i < targetLabel.length; i++){
-                    if(item.labels.indexOf(targetLabel[i]) > -1){
-                        isTarget = true;
-                        break;
-                    }
-                }
-                return isTarget;
-            })
+            if(this.selected != "all"){
+                var selected = this.selected;
+                var filtered = filtered.filter(function(item){
+                    return item.genres.indexOf(selected) > -1 ? true : false;
+                })
+            }
             return filtered;
         }
     },

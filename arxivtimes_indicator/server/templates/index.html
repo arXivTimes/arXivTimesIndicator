@@ -84,7 +84,7 @@
       <article class="media" v-for="paper in filteredList">
         <figure class="media-left">
           <p class="image is-64x64">
-            <meter v-bind:value="paper.score" low="50" min="0" max="100">paper score</meter>
+            <meter v-bind:value="paper.score" low="50" min="0" max="100">score</meter>
           </p>
         </figure>
         <div class="media-content">
@@ -98,10 +98,11 @@
             </p>
           </div>
           <div>
-              <img class="user-icon" v-bind:src="paper.avatar_url"/>
-              <a v-bind:href="paper.user_id" style="line-height:1em">[[paper.user_id]]</a>
-              <span>[[paper.created_at | formatDate]]</span>
-              <strong>[[paper.score]]pt</strong>
+            <strong>[[paper.score]]pt</strong>
+            <img class="user-icon" v-bind:src="paper.avatar_url"/>
+            <a v-bind:href="'user/' + [[paper.user_id]]" target="_user" style="line-height:1em">[[paper.user_id]]</a>
+            <span style="margin-right:10px">[[paper.created_at | formatDate]]</span>
+            <small v-bind:class="['axlabel', label.toLowerCase()]" v-for="label in paper.labels">[[label]]</small>
           </div>
         </div>
       </article>
@@ -113,9 +114,13 @@
 
 {% block bottom %}
 <script>
-    var PAPERS = {% raw papers %};
+    var POSTS = {% raw posts %};
+    var STAT = {% raw stat %};
 </script>
 <script type="text/javascript" src="{{ static_url('js/global.js') }}"></script>
 <script type="text/javascript" src="{{ static_url('js/indexApp.js') }}"></script>
-<script type="text/javascript" src="{{ static_url('js/indexChart.js') }}"></script>
+<script type="text/javascript" src="{{ static_url('js/statChart.js') }}"></script>
+<script>
+  monthlyBars("chart", STAT);
+</script>
 {% end %}

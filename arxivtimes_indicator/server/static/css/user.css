@@ -1,0 +1,21 @@
+.title.top{
+    color: slategray;
+    padding: 7px 0px 7px 15px;
+    border-top: 1px solid #BEDAF5;
+    border-bottom: 1px solid #BEDAF5;
+}
+
+h1.title .score{
+    font-size: 2.0em;
+    font-weight: 300;
+}
+
+meter{
+    width: 32px;
+    height: 32px;    
+}
+
+meter::-webkit-meter-bar {
+    width: 32px;
+    height: 32px;
+}

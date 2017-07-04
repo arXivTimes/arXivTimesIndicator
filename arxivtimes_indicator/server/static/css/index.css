@@ -18,23 +18,11 @@
 }
 
 meter{
-    background: whitesmoke;
     width: 64px;
     height: 64px;    
 }
 
 meter::-webkit-meter-bar {
-    background: whitesmoke;
     width: 64px;
     height: 64px;
-}
-
-meter::-webkit-meter-optimum-value {
-    background: linear-gradient(to bottom, #62c462, #51a351);
-}
-meter::-webkit-meter-suboptimum-value {
-    background: linear-gradient(to bottom, #fbb450, #f89406);
-}
-meter::-webkit-meter-even-less-good-value {
-    background: linear-gradient(to bottom, #ee5f5b, #bd362f);
 }
