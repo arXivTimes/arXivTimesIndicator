@@ -2,7 +2,7 @@ import os
 
 from PIL import Image
 
-from arxivtimes_indicator.data.github import filter_issue_by_ym, get_all_issues, get_icon_url, tally_by_labels, tally_by_users
+from arxivtimes_indicator.data.github import filter_issue_by_ym, fetch_issues, get_icon_url, tally_by_labels, tally_by_users
 from arxivtimes_indicator.data.twitter import fetch_tweets, rank_paper
 from arxivtimes_indicator.data.utils import download, break_line, std_score
 from arxivtimes_indicator.visualization.visualize import save_bar_graph, save_graph_with_icon, save_text_graph
@@ -21,7 +21,7 @@ def fetch_images(user_names, issues):
 
 def main():
     # Fetch Issues
-    issues = get_all_issues()
+    issues = fetch_issues()
     # Process Issues
     filtered_issues = filter_issue_by_ym(issues)
     label_names, label_counts = tally_by_labels(filtered_issues)

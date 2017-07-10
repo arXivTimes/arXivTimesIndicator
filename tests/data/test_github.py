@@ -6,7 +6,7 @@ from arxivtimes_indicator.data.github import *
 class TestGitHub(unittest.TestCase):
 
     def test_get_all_issues(self):
-        issues = get_all_issues()
+        issues = fetch_issues()
         self.assertIsInstance(issues, list)
         self.assertTrue(len(issues) > 0)
 
@@ -30,6 +30,6 @@ class TestGitHub(unittest.TestCase):
         self.assertEqual(counts, [2, 2, 1, 1])
 
     def test_filter_issue_by_ym(self):
-        issues = get_all_issues()
+        issues = fetch_issues()
         filtered_issues = filter_issue_by_ym(issues)
         self.assertTrue(len(filtered_issues) <= len(issues))

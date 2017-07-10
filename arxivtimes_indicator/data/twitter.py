@@ -1,4 +1,5 @@
 import os
+import urllib.request
 from datetime import datetime
 
 import tweepy
@@ -20,31 +21,35 @@ def fetch_tweets(name='arxivtimes', count=100):
     auth.set_access_token(access_token, access_token_secret)
 
     api = tweepy.API(auth)
-    tweets = api.user_timeline(screen_name='arxivtimes', count=100)
+    tweets = [status for status in tweepy.Cursor(api.user_timeline).items()]
+
+    # tweets = api.user_timeline(screen_name='arxivtimes', count=count, tweet_mode='extended')
 
     return tweets
 
 
+def get_full_url(short_url):
+    try:
+        full_url = urllib.request.urlopen(short_url).geturl()
+    except:
+        full_url = ''
+    return full_url
+
+
 def rank_paper(tweets):
     paper_rank = []
-    #now = datetime.now()
     for tweet in tweets:
-        if tweet.source != 'IFTTT':
+        short_url = tweet.text.split(' ')[-1]
+        url = get_full_url(short_url)
+        if not url.startswith('https://github.com/arXivTimes/arXivTimes/issues/'):
             continue
-
-        #created_at = tweet.created_at
-        paper_title = ' '.join(tweet.text.split()[:-1])
         favorite_count = tweet.favorite_count
         retweet_count = tweet.retweet_count
-        score = favorite_count + 2 * retweet_count
-        paper_rank.append((score, paper_title))
-        #if now.year == created_at.year and now.month == created_at.month:
-        #    paper_rank.append((score, paper_title))
-        #else:
-        #    paper_rank.append((score, paper_title))
+        score = favorite_count + 5 * retweet_count
+        paper_rank.append((score, url))
 
     scores = [s for s, _ in paper_rank]
-    titles = [t for _, t in paper_rank]
+    urls = [u for _, u in paper_rank]
     scores = std_score(scores)
 
-    return scores, titles
+    return scores, urls

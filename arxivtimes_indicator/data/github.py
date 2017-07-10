@@ -6,7 +6,7 @@ import requests
 from dateutil.parser import parse
 
 
-def get_all_issues():
+def fetch_issues():
     url = 'https://api.github.com/repos/arXivTimes/arXivTimes/issues?per_page=100'
     issues = []
     cnt = 0
