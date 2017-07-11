@@ -20,14 +20,14 @@ class DummyData(DataApi):
     def get_recent(self, user_id="", limit=-1):
         path = os.path.join(os.path.dirname(__file__), "./_data/dummy_data.json")
         with open(path) as f:
-            papers = json.load(f)
-            for p in papers:
+            posts = json.load(f)
+            for p in posts:
                 p["genres"] = ["" if lb not in self.LABEL_TO_GENRE else self.LABEL_TO_GENRE[lb] for lb in p["labels"]]
                 p["genres"] = [g for g in p["genres"] if g]
 
             if user_id:
-                papers = [p for p in papers if p["user_id"] == user_id]
-        return papers
+                posts = [p for p in posts if p["user_id"] == user_id]
+        return posts
 
     def get_popular(self, user_id="", limit=-1):
         ps = self.get_recent(user_id, limit)
