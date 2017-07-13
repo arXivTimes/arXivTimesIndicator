@@ -1,4 +1,10 @@
+from collections import defaultdict, Counter
+from datetime import datetime
+
+import dateutil.parser
+import dateutil.relativedelta
 from peewee import *
+
 
 db = SqliteDatabase('my_app.db')
 
@@ -24,7 +30,7 @@ class BaseModel(Model):
 
 class Issue(BaseModel):
     title = CharField()
-    url = CharField(unique=True)
+    url = CharField(primary_key=True, unique=True)
     user_id = CharField()
     avatar_url = CharField()
     score = IntegerField()
@@ -40,7 +46,7 @@ class Issue(BaseModel):
 
 
 class Label(BaseModel):
-    issue = ForeignKeyField(Issue, related_name='labels')
+    issue = ForeignKeyField(Issue, to_field='url', related_name='labels')
     name = CharField()
 
     def __init__(self, name):  # Aggregate label names
@@ -49,35 +55,27 @@ class Label(BaseModel):
 
 
 def get_recent(user_id, limit):
-    Issue.select().where(Issue.user_id==user_id).order_by(Issue.created_at)
+    if user_id:
+        return Issue.select().where(Issue.user_id==user_id).order_by(Issue.created_at).limit(limit)
+    else:
+        return Issue.select().order_by(Issue.created_at).limit(limit)
 
 
 def get_popular(user_id, limit):
-    Issue.select().where(Issue.user_id==user_id).order_by(Issue.score)
+    if user_id:
+        return Issue.select().where(Issue.user_id == user_id).order_by(Issue.score).limit(limit)
+    else:
+        return Issue.select().order_by(Issue.score).limit(limit)
 
 
-def aggregate_per_month(self, user_id="", month=6, use_genre=True):
-    """
-    Get aggreagation of post count per year_month and genre or label
-    Args:
-        user_id: to filter the records by user_id
-        month: to limit the aggrecation time range
-        use_genre: use genre to aggregate (when False then use label)
-    Returns:
-        aggregation: post count aggregation by year/month, genre(or label).
-        example {"2017/01": {"genre1": 1, "genre2": 3, ...}}
-        (The size of each year/month aggregation should be equal.
-        You have to compensate 0 if the specific genres don't exist in that year/month.)
-    """
-
-    from datetime import datetime
-    import dateutil.relativedelta
-    import dateutil.parser
-    from collections import defaultdict, Counter
+def aggregate_per_month(user_id="", month=6, use_genre=True):
     now = datetime.now()
-    start_time = now - dateutil.relativedelta(months=month)
-    start_time_str = start_time.strftime("%Y-%m-%d %H:%M:%S+00:00")
-    issues = Issue.select().where(Issue.user_id == user_id).where(Issue.created_at >= start_time_str)
+    start_time = now - dateutil.relativedelta.relativedelta(months=month)
+    start_time_str = start_time.strftime("%Y-%m-01 00:00:00+00:00")
+    if user_id:
+        issues = Issue.select().where(Issue.user_id == user_id).where(Issue.created_at >= start_time_str)
+    else:
+        issues = Issue.select().where(Issue.created_at >= start_time_str)
     counter = defaultdict(Counter)
     for issue in issues:
         key = dateutil.parser.parse(issue.created_at).strftime('%Y/%m')
@@ -87,17 +85,6 @@ def aggregate_per_month(self, user_id="", month=6, use_genre=True):
 
 
 def aggregate_kinds(user_id="", month=6, use_genre=True):
-    """
-    Get aggreagation of post count per genre or label
-    Args:
-        user_id: to filter the records by user_id
-        month: to limit the aggrecation time range
-        use_genre: use genre to aggregate (when False then use label)
-    Returns:
-        aggregation: post count aggregation by genre(or label).
-        example {"genre1": 11, "genre2": 31, ...}
-    """
-    from collections import Counter
     counters = aggregate_per_month(user_id, month, use_genre)
     counter = Counter()
     for c in counters.values():

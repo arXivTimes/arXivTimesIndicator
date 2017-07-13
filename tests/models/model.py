@@ -1,3 +1,4 @@
+import random
 import unittest
 from datetime import datetime
 
@@ -69,3 +70,64 @@ class TestIssue(unittest.TestCase):
 
     def tearDown(self):
         drop_tables()
+
+
+class TestDataAPI(unittest.TestCase):
+
+    max_count = 100
+
+    def setUp(self):
+        create_tables()
+        self._insert_data(count=self.max_count)
+
+    def tearDown(self):
+        drop_tables()
+
+    def _insert_data(self, count):
+        for i in range(count):
+            issue = self.generate_data()
+            issue.save()
+
+    def generate_data(self):
+        url = 'http://example.com'
+        title = 'example'
+        body = 'example'
+        user_id = 'user_{}'.format(random.randint(0, 10))
+        avatar_url = 'http://example.com'
+        label = Label('example')
+        labels = [label]
+        score = random.randint(30, 80)
+        created_at = '2017-07-{:02d} 00:00:00+00:00'.format(random.randint(1, 30))
+        issue = Issue(title=title,
+                      url=url,
+                      user_id=user_id,
+                      avatar_url=avatar_url,
+                      score=score,
+                      created_at=created_at,
+                      body=body,
+                      labels=labels)
+        return issue
+
+    def test_get_recent(self):
+        issues = get_recent(user_id='', limit=-1)
+        self.assertEqual(len(issues), self.max_count)
+        issues = get_recent(user_id='', limit=10)
+        self.assertEqual(len(issues), 10)
+        issues = get_recent(user_id='user_3', limit=-1)
+        self.assertTrue(len(issues) < self.max_count)
+
+    def test_get_popular(self):
+        issues = get_popular(user_id='', limit=-1)
+        self.assertEqual(len(issues), self.max_count)
+        issues = get_popular(user_id='', limit=10)
+        self.assertEqual(len(issues), 10)
+        issues = get_popular(user_id='user_3', limit=-1)
+        self.assertTrue(len(issues) < self.max_count)
+
+    def test_aggregate_per_month(self):
+        res = aggregate_per_month()
+        print(res.keys())
+        print(res.values())
+
+    def test_aggregate_kinds(self):
+        res = aggregate_kinds()
