@@ -30,7 +30,7 @@ class BaseModel(Model):
 
 class Issue(BaseModel):
     title = CharField()
-    url = CharField(primary_key=True, unique=True)
+    url = CharField(unique=True)
     user_id = CharField()
     avatar_url = CharField()
     score = IntegerField()
@@ -46,12 +46,9 @@ class Issue(BaseModel):
 
 
 class Label(BaseModel):
-    issue = ForeignKeyField(Issue, to_field='url', related_name='labels')
+    #issue = ForeignKeyField(Issue, to_field='url', related_name='labels')
+    issue = ForeignKeyField(Issue, related_name='labels')
     name = CharField()
-
-    def __init__(self, name):  # Aggregate label names
-        super(Label, self).__init__()
-        self.name = name
 
 
 def get_recent(user_id, limit):
@@ -80,7 +77,7 @@ def aggregate_per_month(user_id="", month=6, use_genre=True):
     for issue in issues:
         key = dateutil.parser.parse(issue.created_at).strftime('%Y/%m')
         for label in issue.labels:
-            counter[key][label] += 1
+            counter[key][label.name] += 1
     return counter
 
 

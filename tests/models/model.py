@@ -72,6 +72,31 @@ class TestIssue(unittest.TestCase):
         drop_tables()
 
 
+class TestLabel(unittest.TestCase):
+
+    def setUp(self):
+        create_tables()
+
+    def test_create(self):
+        name = 'example'
+        label = Label(name=name)
+        self.assertEqual(label.name, name)
+
+    def test_count(self):
+        self.assertEqual(len(Label.select()), 0)
+        label = Label(name='example')
+        issue = Issue(title='title', url='url', user_id='user_id', avatar_url='avatar_url',
+                      score=50, created_at=datetime.now(), body='body', labels=[label])
+        issue.save()
+        label.issue = issue
+        label.save()
+        self.assertEqual(len(Label.select()), 1)
+        self.assertEqual(len(Issue.select()), 1)
+
+    def tearDown(self):
+        drop_tables()
+
+
 class TestDataAPI(unittest.TestCase):
 
     max_count = 100
@@ -85,8 +110,11 @@ class TestDataAPI(unittest.TestCase):
 
     def _insert_data(self, count):
         for i in range(count):
-            issue = self.generate_data()
+            issue, labels = self.generate_data()
             issue.save()
+            for label in labels:
+                label.issue = issue
+                label.save()
 
     def generate_data(self):
         url = 'http://example.com'
@@ -94,10 +122,10 @@ class TestDataAPI(unittest.TestCase):
         body = 'example'
         user_id = 'user_{}'.format(random.randint(0, 10))
         avatar_url = 'http://example.com'
-        label = Label('example')
+        label = Label(name='example{}'.format(random.randint(0, 5)))
         labels = [label]
         score = random.randint(30, 80)
-        created_at = '2017-07-{:02d} 00:00:00+00:00'.format(random.randint(1, 30))
+        created_at = '2017-0{}-{:02d} 00:00:00+00:00'.format(random.randint(3, 5), random.randint(1, 30))
         issue = Issue(title=title,
                       url=url,
                       user_id=user_id,
@@ -106,7 +134,7 @@ class TestDataAPI(unittest.TestCase):
                       created_at=created_at,
                       body=body,
                       labels=labels)
-        return issue
+        return issue, labels
 
     def test_get_recent(self):
         issues = get_recent(user_id='', limit=-1)
@@ -131,3 +159,5 @@ class TestDataAPI(unittest.TestCase):
 
     def test_aggregate_kinds(self):
         res = aggregate_kinds()
+        print(res.keys())
+        print(res.values())

@@ -9,7 +9,6 @@ def main():
     issues = fetch_issues()
     tweets = fetch_tweets(count=400)
 
-    # calculate scores
     scores, urls = rank_paper(tweets)
     url_score = dict(zip(urls, scores))
     from pprint import pprint
@@ -38,6 +37,9 @@ def main():
                       created_at=created_at,
                       body=body,
                       labels=labels)
+        for label in labels:
+            label.issue = issue
+            label.save()
         query = Issue.select().where(Issue.url == url)
         if query.exists():
             Issue.update(score=score).where(Issue.url == url).execute()
