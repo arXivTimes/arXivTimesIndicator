@@ -5,6 +5,8 @@ import dateutil.parser
 import dateutil.relativedelta
 from peewee import *
 
+from arxivtimes_indicator.server.data_api import DataApi
+
 
 db = SqliteDatabase('my_app.db')
 
@@ -46,44 +48,42 @@ class Issue(BaseModel):
 
 
 class Label(BaseModel):
-    #issue = ForeignKeyField(Issue, to_field='url', related_name='labels')
     issue = ForeignKeyField(Issue, related_name='labels')
     name = CharField()
 
 
-def get_recent(user_id, limit):
-    if user_id:
-        return Issue.select().where(Issue.user_id==user_id).order_by(Issue.created_at).limit(limit)
-    else:
-        return Issue.select().order_by(Issue.created_at).limit(limit)
+class IndicatorApi(DataApi):
 
+    def get_recent(self, user_id='', limit=-1):
+        if user_id:
+            return Issue.select().where(Issue.user_id==user_id).order_by(Issue.created_at).limit(limit)
+        else:
+            return Issue.select().order_by(Issue.created_at).limit(limit)
 
-def get_popular(user_id, limit):
-    if user_id:
-        return Issue.select().where(Issue.user_id == user_id).order_by(Issue.score).limit(limit)
-    else:
-        return Issue.select().order_by(Issue.score).limit(limit)
+    def get_popular(self, user_id='', limit=-1):
+        if user_id:
+            return Issue.select().where(Issue.user_id == user_id).order_by(Issue.score).limit(limit)
+        else:
+            return Issue.select().order_by(Issue.score).limit(limit)
 
+    def aggregate_per_month(self, user_id='', month=6, use_genre=True):
+        now = datetime.now()
+        start_time = now - dateutil.relativedelta.relativedelta(months=month)
+        start_time_str = start_time.strftime('%Y-%m-01 00:00:00+00:00')
+        if user_id:
+            issues = Issue.select().where(Issue.user_id == user_id).where(Issue.created_at >= start_time_str)
+        else:
+            issues = Issue.select().where(Issue.created_at >= start_time_str)
+        counter = defaultdict(Counter)
+        for issue in issues:
+            key = dateutil.parser.parse(issue.created_at).strftime('%Y/%m')
+            for label in issue.labels:
+                counter[key][label.name] += 1
+        return counter
 
-def aggregate_per_month(user_id="", month=6, use_genre=True):
-    now = datetime.now()
-    start_time = now - dateutil.relativedelta.relativedelta(months=month)
-    start_time_str = start_time.strftime("%Y-%m-01 00:00:00+00:00")
-    if user_id:
-        issues = Issue.select().where(Issue.user_id == user_id).where(Issue.created_at >= start_time_str)
-    else:
-        issues = Issue.select().where(Issue.created_at >= start_time_str)
-    counter = defaultdict(Counter)
-    for issue in issues:
-        key = dateutil.parser.parse(issue.created_at).strftime('%Y/%m')
-        for label in issue.labels:
-            counter[key][label.name] += 1
-    return counter
-
-
-def aggregate_kinds(user_id="", month=6, use_genre=True):
-    counters = aggregate_per_month(user_id, month, use_genre)
-    counter = Counter()
-    for c in counters.values():
-        counter += c
-    return counter
+    def aggregate_kinds(self, user_id='', month=6, use_genre=True):
+        counters = self.aggregate_per_month(user_id, month, use_genre)
+        counter = Counter()
+        for c in counters.values():
+            counter += c
+        return counter
