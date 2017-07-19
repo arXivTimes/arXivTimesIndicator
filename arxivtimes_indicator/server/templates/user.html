@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block head %}
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/vue/2.3.4/vue.min.js"></script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
+<link rel="stylesheet" href="{{ static_url('css/user.css') }}" type="text/css"/>
+{% end %}
+
+{% block body %}
+
+<h1 class="title top" >@{{profile["user_id"]}}</h1>
+
+<div class="container">
+  <div class="columns">
+    <div class="column">
+        <article class="media">
+            <figure class="media-left">
+                <p class="image is-64x64">
+                <img src="{{profile['avatar_url']}}">
+                </p>
+            </figure>
+            <div class="media-content">
+            <div class="content">
+                <p>
+                    <strong>{{profile["name"]}}</strong> <small>{{profile["belongs"]}}</small>
+                </p>
+            </div>
+            <nav class="level is-mobile">
+                <div class="level-left">
+                <a class="level-item" href="{{profile['url']}}">
+                    <span class="icon is-medium"><i class="fa fa-github" aria-hidden="true"></i></span>
+                </a>
+                <a class="level-item" href="{{profile['blog']}}">
+                    <span class="icon is-medium"><i class="fa fa-home" aria-hidden="true"></i></span>
+                </a>
+                </div>
+            </nav>
+            </div>
+        </article>
+    </div>
+    <div class="column">
+    　　<h1 class="title">
+         <span class="score">{{profile['total_score']}}</span>pt
+         <span style="font-size: 2.0em;">&nbsp;&nbsp;</span>
+         <span class="score">{{profile['post_count']}}</span>posts
+       </h1>
+    </div>
+  </div>
+  <hr/>
+  
+  <div class="columns">
+    <div class="column">
+        <div style="padding-left:10px; padding-right:10px;height:250px">
+            <canvas id="kinds"></canvas>
+        </div>
+    </div>
+    <div class="column">
+        <div style="padding-left:10px; padding-right:10px;height:250px">
+            <canvas id="monthly"></canvas>
+        </div>
+    </div>
+  </div>
+  
+  <div class="columns">
+    {% for kind in ("recent", "popular") %}
+      <div class="column">
+        <h3 class="title is-3">{{ "Recent" if kind == "recent" else "Popular" }}</h3>
+        {% for p in posts[kind] %}
+        <article class="media">
+          <figure class="media-left">
+            <p class="image is-32x32">
+              <meter value="{{p['score']}}" low="50" min="0" max="100">score</meter>
+            </p>
+          </figure>
+          <div class="media-content">
+            <div class="content">
+              <a href="{{p['url']}}" target="_paper">{{p["title"]}}</a><br/>
+              <small style="margin-right:10px">{{p['created_at'].split("T")[0]}}</small>
+              {% for label in p["labels"] %}
+                <small class="axlabel {{label.lower()}}">{{label}}</small>
+              {% end %}
+            </div>
+          </div>
+        </article>
+        {% end %}
+    </div>
+    {% end %}
+  </div>
+
+</div>
+
+{% module xsrf_form_html() %}
+{% end %}
+
+{% block bottom %}
+<script>
+    var STATS = {% raw stats %};
+</script>
+<script type="text/javascript" src="{{ static_url('js/global.js') }}"></script>
+<script type="text/javascript" src="{{ static_url('js/statChart.js') }}"></script>
+<script>
+    kindsPie("kinds", STATS["kinds"]);
+    monthlyBars("monthly", STATS["monthly"], false);
+</script>
+{% end %}
