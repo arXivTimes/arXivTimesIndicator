@@ -9,6 +9,12 @@ class DataApi():
         "AudioSynthesis": "audio"
     }
 
+    @classmethod
+    def labels_to_genres(cls, labels):
+        genres = ["" if lb not in cls.LABEL_TO_GENRE else cls.LABEL_TO_GENRE[lb] for lb in labels]
+        genres = [g for g in genres if g]
+        return genres
+
     def get_recent(self, user_id="", limit=-1):
         """
         Get Recent Posts
@@ -63,4 +69,10 @@ class DataApi():
             aggregation: post count aggregation by genre(or label).
             example {"genre1": 11, "genre2": 31, ...}
         """
+        raise Exception("Have to implements in DataApi subclass.")
+
+    def get_user_total_score(self, user_id):
+        raise Exception("Have to implements in DataApi subclass.")
+
+    def get_user_post_count(self, user_id):
         raise Exception("Have to implements in DataApi subclass.")

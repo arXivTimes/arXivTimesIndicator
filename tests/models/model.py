@@ -1,6 +1,8 @@
 import random
 import unittest
 from datetime import datetime
+import os, sys
+sys.path.append(os.path.join(os.path.dirname(__file__), "../../"))
 
 from arxivtimes_indicator.models.model import *
 
@@ -62,9 +64,7 @@ class TestIssue(unittest.TestCase):
         ### 論文リンク
 
         https://arxiv.org/abs/1706.09254"""
-        issue = Issue(title='title', url='url', user_id='user_id', avatar_url='avatar_url',
-                      score=50, created_at=datetime.now(), body=body, labels=[])
-        headline = issue.extract_headline()
+        headline = Issue.extract_headline(body)
         result = '''End-to-Endの対話システムを構築するためのデータセットが公開。50万発話でが含まれ、ドメインはレストラン検索となっている。発話に対しては固有表現(slot)的なアノテーションもされている(「フレンチが食べたい。500円くらいで」なら、種別=フレンチ、予算=500円など)。'''
         self.assertEqual(headline, result)
 
@@ -165,3 +165,19 @@ class TestDataAPI(unittest.TestCase):
         res = data_api.aggregate_kinds()
         print(res.keys())
         print(res.values())
+
+    def test_get_user_total_score(self):
+        data_api = IndicatorApi()
+        score = data_api.get_user_total_score('user_3')
+        self.assertTrue(isinstance(score, int))
+        self.assertTrue(score > 0)        
+
+    def test_get_user_post_count(self):
+        data_api = IndicatorApi()
+        count = data_api.get_user_post_count('user_3')
+        self.assertTrue(isinstance(count, int))
+        self.assertTrue(count > 0)        
+
+
+if __name__ == "__main__":
+    unittest.main()

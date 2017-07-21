@@ -3,6 +3,7 @@ import json
 import tornado.web
 import requests
 import pandas as pd
+from arxivtimes_indicator.models.model import IndicatorApi
 from arxivtimes_indicator.server.__dummy_data import DummyData
 
 
@@ -11,20 +12,17 @@ class IndexHandler(tornado.web.RequestHandler):
         posts = {}
         stat = {}
 
-        if DummyData.is_dummy_request(self):
-            dd = DummyData()
-            recent = dd.get_recent()
-            popular = dd.get_popular()
-            posts = {
-                "recent": recent,
-                "popular": popular
-            }
-            posts = json.dumps(posts)
-            stat = json.dumps(dd.aggregate_per_month())
-        else:
-            # todo: extract data from url
-            pass
-        
+        api = IndicatorApi() if not DummyData.is_dummy_request(self) else DummyData()
+        recent = api.get_recent()
+        popular = api.get_popular()
+        stat = api.aggregate_per_month()
+        posts = {
+            "recent": recent,
+            "popular": popular
+        }
+        posts = json.dumps(posts)
+        stat = json.dumps(stat)
+
         self.render("index.html", posts=posts, stat=stat)
 
 
@@ -66,20 +64,20 @@ class UserHandler(tornado.web.RequestHandler):
         posts = {"recent":[], "popular":[]}
         stats = {"monthly":{}, "kinds": {}}
 
-        if DummyData.is_dummy_request(self):
-            dd = DummyData()
-            profile["total_score"] = dd.get_user_total_score(user_id)
-            profile["post_count"] = dd.get_user_post_count(user_id)
-            recent = dd.get_recent(user_id=user_id)[:10]
-            popular = dd.get_popular(user_id=user_id)[:10]
-            posts["recent"] = recent
-            posts["popular"] = popular
+        api = IndicatorApi() if not DummyData.is_dummy_request(self) else DummyData()
 
-            monthly = dd.aggregate_per_month(user_id)
-            kinds = dd.aggregate_kinds(user_id)
-            stats["monthly"] = monthly
-            stats["kinds"] = kinds
-            stats = json.dumps(stats)
+        profile["total_score"] = api.get_user_total_score(user_id)
+        profile["post_count"] = api.get_user_post_count(user_id)
+        recent = api.get_recent(user_id=user_id)[:10]
+        popular = api.get_popular(user_id=user_id)[:10]
+        posts["recent"] = recent
+        posts["popular"] = popular
+
+        monthly = api.aggregate_per_month(user_id)
+        kinds = api.aggregate_kinds(user_id)
+        stats["monthly"] = monthly
+        stats["kinds"] = kinds
+        stats = json.dumps(stats)
 
         self.render("user.html", profile=profile, posts=posts, stats=stats)
 

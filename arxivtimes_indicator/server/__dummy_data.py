@@ -4,7 +4,7 @@ import json
 from datetime import datetime
 import numpy as np
 import requests
-from arxivtimes_indicator.server.data_api import DataApi
+from arxivtimes_indicator.data_api import DataApi
 
 
 class DummyData(DataApi):
@@ -22,8 +22,7 @@ class DummyData(DataApi):
         with open(path) as f:
             posts = json.load(f)
             for p in posts:
-                p["genres"] = ["" if lb not in self.LABEL_TO_GENRE else self.LABEL_TO_GENRE[lb] for lb in p["labels"]]
-                p["genres"] = [g for g in p["genres"] if g]
+                p["genres"] = self.labels_to_genres(p["labels"])
 
             if user_id:
                 posts = [p for p in posts if p["user_id"] == user_id]

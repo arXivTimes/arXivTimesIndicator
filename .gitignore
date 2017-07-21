@@ -104,3 +104,5 @@ ENV/
 /data
 /reports
 /arxivtimes_indicator/server/_data
+tests/test_app.db
+database.db

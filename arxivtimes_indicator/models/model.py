@@ -1,14 +1,19 @@
+import os
+import sys
 from collections import defaultdict, Counter
 from datetime import datetime
 
 import dateutil.parser
 import dateutil.relativedelta
 from peewee import *
+from playhouse.shortcuts import model_to_dict
 
-from arxivtimes_indicator.server.data_api import DataApi
+from arxivtimes_indicator.data_api import DataApi
 
 
-db = SqliteDatabase('my_app.db')
+db = SqliteDatabase(os.path.join(os.path.join(os.path.dirname(__file__), '../../'), 'database.db'))
+if "unittest" in sys.modules:
+    db = SqliteDatabase(os.path.join(os.path.join(os.path.dirname(__file__), '../../tests/'), 'test_db.db'))
 
 
 def create_tables():
@@ -39,11 +44,14 @@ class Issue(BaseModel):
     created_at = DateTimeField()
     body = TextField()
 
-    def extract_headline(self):
+    @classmethod
+    def extract_headline(cls, body):
         headline_left = len('## 一言でいうと')
-        headline_right = self.body.index('###')  # until next section
-        headline = self.body[headline_left:headline_right].strip()
-
+        headline_right = body.find('###')  # until next section
+        if headline_right > 0:
+            headline = body[headline_left:headline_right].strip()
+        else:
+            headline = body
         return headline
 
 
@@ -54,17 +62,27 @@ class Label(BaseModel):
 
 class IndicatorApi(DataApi):
 
+    def issue_to_dict(self, issue):
+        issue_dict = model_to_dict(issue, backrefs=True)
+        headline = Issue.extract_headline(issue_dict["body"])
+        issue_dict["headline"] = headline
+        labels = [lb["name"] for lb in issue_dict["labels"]]
+        issue_dict["genres"] = self.labels_to_genres(labels)
+        return issue_dict
+
     def get_recent(self, user_id='', limit=-1):
         if user_id:
-            return Issue.select().where(Issue.user_id==user_id).order_by(Issue.created_at).limit(limit)
+            q = Issue.select().where(Issue.user_id==user_id).order_by(Issue.created_at).limit(limit)
         else:
-            return Issue.select().order_by(Issue.created_at).limit(limit)
+            q = Issue.select().order_by(Issue.created_at).limit(limit)
+        return [self.issue_to_dict(iss) for iss in q]
 
     def get_popular(self, user_id='', limit=-1):
         if user_id:
-            return Issue.select().where(Issue.user_id == user_id).order_by(Issue.score).limit(limit)
+            q = Issue.select().where(Issue.user_id == user_id).order_by(Issue.score).limit(limit)
         else:
-            return Issue.select().order_by(Issue.score).limit(limit)
+            q = Issue.select().order_by(Issue.score).limit(limit)
+        return [self.issue_to_dict(iss) for iss in q]
 
     def aggregate_per_month(self, user_id='', month=6, use_genre=True):
         now = datetime.now()
@@ -74,16 +92,46 @@ class IndicatorApi(DataApi):
             issues = Issue.select().where(Issue.user_id == user_id).where(Issue.created_at >= start_time_str)
         else:
             issues = Issue.select().where(Issue.created_at >= start_time_str)
-        counter = defaultdict(Counter)
+        stat = defaultdict(Counter)
         for issue in issues:
             key = dateutil.parser.parse(issue.created_at).strftime('%Y/%m')
-            for label in issue.labels:
-                counter[key][label.name] += 1
-        return counter
+            issue_d = self.issue_to_dict(issue)
+            kinds = issue_d["genres"] if use_genre else issue_d["labels"]
+            for k in kinds:
+                stat[key][k] += 1
+
+        genres = list(set(self.LABEL_TO_GENRE.values()))
+        labels = list(self.LABEL_TO_GENRE.keys())
+        kinds = genres if use_genre else labels
+        _year, _month = start_time.year, start_time.month
+        yms = []
+        for i in range(month):
+            ym = "{}/{}".format(_year, str(_month).zfill(2))
+            if ym not in stat:
+                stat[ym] = {}
+            for k in kinds:
+                if k not in stat[ym]:
+                    stat[ym][k] = 0  # fill missing
+
+            _month = _month + 1  # timedelta doesn't support month!
+            if _month > 12:
+                _month = _month - 12
+                _year = _year + 1
+
+        return stat
 
     def aggregate_kinds(self, user_id='', month=6, use_genre=True):
-        counters = self.aggregate_per_month(user_id, month, use_genre)
-        counter = Counter()
-        for c in counters.values():
-            counter += c
-        return counter
+        ym_stat = self.aggregate_per_month(user_id, month, use_genre)
+        stat = Counter()
+        for kind_count in ym_stat.values():
+            stat += kind_count
+        
+        return dict(stat)
+
+    def get_user_total_score(self, user_id):
+        score = Issue.select(fn.SUM(Issue.score)).where(Issue.user_id == user_id).group_by(Issue.user_id).scalar()
+        return score
+
+    def get_user_post_count(self, user_id):
+        count = Issue.select(Issue.title).where(Issue.user_id == user_id).count()
+        return count
