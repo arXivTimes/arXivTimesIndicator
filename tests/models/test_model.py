@@ -1,6 +1,6 @@
 import random
 import unittest
-from datetime import datetime
+from datetime import datetime, timedelta
 import os, sys
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../"))
 
@@ -31,7 +31,7 @@ class TestIssue(unittest.TestCase):
         score = 55
         created_at = datetime.now()
         body = 'test_body'
-        labels = [Label(name='CV'), Label(name='NLP')]
+        labels = [Label(name='ComputerVision'), Label(name='CNN')]
         issue = Issue(title=title,
                       url=url,
                       user_id=user_id,
@@ -117,15 +117,17 @@ class TestDataAPI(unittest.TestCase):
                 label.save()
 
     def generate_data(self):
+        LABELS = list(IndicatorApi.LABEL_TO_GENRE.keys())
         url = 'http://example.com'
         title = 'example'
         body = 'example'
         user_id = 'user_{}'.format(random.randint(0, 10))
         avatar_url = 'http://example.com'
-        label = Label(name='example{}'.format(random.randint(0, 5)))
-        labels = [label]
+        labels = [Label(name=name) for name in random.sample(LABELS, random.randint(1, 4))]
         score = random.randint(30, 80)
-        created_at = '2017-0{}-{:02d} 00:00:00+00:00'.format(random.randint(3, 5), random.randint(1, 30))
+        now = datetime.now()
+        delta = timedelta(weeks=random.randint(1, 25))
+        created_at = '{}-{} 00:00:00+00:00'.format((now - delta).strftime("%Y-%m"), random.randint(1, 28))
         issue = Issue(title=title,
                       url=url,
                       user_id=user_id,

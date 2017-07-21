@@ -113,6 +113,7 @@ class IndicatorApi(DataApi):
                 if k not in stat[ym]:
                     stat[ym][k] = 0  # fill missing
 
+            stat[ym] = dict(stat[ym])
             _month = _month + 1  # timedelta doesn't support month!
             if _month > 12:
                 _month = _month - 12
