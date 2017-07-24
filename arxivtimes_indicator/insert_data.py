@@ -20,7 +20,7 @@ def main():
         body       = issue['body']
         user_id    = issue['user']['login']
         avatar_url = issue['user']['avatar_url']
-        labels     = [Label(label['name']) for label in issue['labels']]
+        labels     = [Label(name=label['name']) for label in issue['labels']]
         created_at = dateutil.parser.parse(issue['created_at'])
         try:
             score = round(url_score[url])
@@ -37,14 +37,15 @@ def main():
                       created_at=created_at,
                       body=body,
                       labels=labels)
-        for label in labels:
-            label.issue = issue
-            label.save()
+
         query = Issue.select().where(Issue.url == url)
         if query.exists():
             Issue.update(score=score).where(Issue.url == url).execute()
         else:
             issue.save()
+            for label in labels:
+                label.issue = issue
+                label.save()
     print(cnt)
 
 
