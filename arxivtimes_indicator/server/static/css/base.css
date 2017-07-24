@@ -61,3 +61,8 @@ meter::-webkit-meter-even-less-good-value {
     border: 1px solid #b0c4de;
     background-color: #b0c4de;    
 }
+
+.content-area{
+    margin-left:.75em;
+    margin-right:.75em
+}

@@ -16,6 +16,9 @@ var instance = new Vue({
         },
         toggleList: function(){
             this.isRecent = !this.isRecent;
+        },
+        pocketLink: function(post){
+            return "https://getpocket.com/edit.php?url=" + post.url + "&title=" + post.title;
         }
     },
     computed: {
@@ -39,7 +42,7 @@ var instance = new Vue({
                 })
             }
             return filtered;
-        }
+        } 
     },
     filters: {
         makeHeadline: function(markdText){

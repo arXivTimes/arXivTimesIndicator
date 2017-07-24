@@ -3,7 +3,7 @@ import unittest
 from datetime import datetime, timedelta
 import os, sys
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../"))
-
+import tests.models
 from arxivtimes_indicator.models.model import *
 
 

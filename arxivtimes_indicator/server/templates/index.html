@@ -60,29 +60,32 @@
         </li>
     </ul>
     </div>
-    <div class="columns">
-      <div class="column">
-        <h1 class="title">[[title]]</h1>
-      </div>
-      <div class="column">
-        <div class="field has-addons" style="float:right">
-            <p class="control" >
-                <a v-bind:class="['button', {'is-focused': isRecent}]" v-on:click="toggleList">
-                <span>Recent</span>
-                </a>
-            </p>
-            <p class="control">
-                <a v-bind:class="['button', {'is-focused': !isRecent}]" v-on:click="toggleList">
-                <span>Popular</span>
-                </a>
-            </p>
+    <div class="content-area">
+      <div class="columns">
+        <div class="column">
+          <h1 class="title">[[title]]</h1>
         </div>
-        <br style="clear:both"/>
+        <div class="column">
+          <div class="field has-addons" style="float:right">
+              <p class="control" >
+                  <a v-bind:class="['button', {'is-focused': isRecent}]" v-on:click="toggleList">
+                  <span>Recent</span>
+                  </a>
+              </p>
+              <p class="control">
+                  <a v-bind:class="['button', {'is-focused': !isRecent}]" v-on:click="toggleList">
+                  <span>Popular</span>
+                  </a>
+              </p>
+          </div>
+          <br style="clear:both"/>
+        </div>
       </div>
     </div>
-    <div>
+    <br/>
+    <div class="content-area">
       <article class="media" v-for="paper in filteredList">
-        <figure class="media-left">
+        <figure class="media-left is-hidden-mobile">
           <p class="image is-64x64">
             <meter v-bind:value="paper.score" low="50" min="0" max="100">score</meter>
           </p>
@@ -98,11 +101,20 @@
             </p>
           </div>
           <div>
-            <strong>[[paper.score]]pt</strong>
-            <img class="user-icon" v-bind:src="paper.avatar_url"/>
-            <a v-bind:href="'user/' + [[paper.user_id]]" target="_user" style="line-height:1em">[[paper.user_id]]</a>
-            <span style="margin-right:10px">[[paper.created_at | formatDate]]</span>
-            <small v-bind:class="['axlabel', label.toLowerCase()]" v-for="label in paper.labels">[[label]]</small>
+            <div class="columns">
+              <div class="column is-three-quarters">
+                rate:<strong>[[paper.score]]</strong>
+                <img class="user-icon" v-bind:src="paper.avatar_url"/>
+                <a v-bind:href="'user/' + [[paper.user_id]]" target="_user" style="line-height:1em">[[paper.user_id]]</a>
+                <span style="margin-right:10px">[[paper.created_at | formatDate]]</span>
+                <small v-bind:class="['axlabel', label.toLowerCase()]" v-for="label in paper.labels">[[label]]</small>
+              </div>
+              <div class="column" style="text-align:right; margin-right:5px">
+                <a v-bind:href="pocketLink(paper)" target="_pocket" class="icon">
+                    <i class="fa fa-2 fa-get-pocket" aria-hidden="true" style="color:#d3505a"></i>
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       </article>

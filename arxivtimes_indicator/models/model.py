@@ -12,7 +12,7 @@ from arxivtimes_indicator.data_api import DataApi
 
 
 db = SqliteDatabase(os.path.join(os.path.join(os.path.dirname(__file__), '../../'), 'database.db'))
-if "unittest" in sys.modules:
+if "tests.models" in sys.modules:
     db = SqliteDatabase(os.path.join(os.path.join(os.path.dirname(__file__), '../../tests/'), 'test_db.db'))
 
 
@@ -67,24 +67,25 @@ class IndicatorApi(DataApi):
         headline = Issue.extract_headline(issue_dict["body"])
         issue_dict["headline"] = headline
         labels = [lb["name"] for lb in issue_dict["labels"]]
+        issue_dict["labels"] = labels
         issue_dict["genres"] = self.labels_to_genres(labels)
         return issue_dict
 
     def get_recent(self, user_id='', limit=-1):
         if user_id:
-            q = Issue.select().where(Issue.user_id==user_id).order_by(Issue.created_at).limit(limit)
+            q = Issue.select().where(Issue.user_id==user_id).order_by(Issue.created_at.desc()).limit(limit)
         else:
-            q = Issue.select().order_by(Issue.created_at).limit(limit)
+            q = Issue.select().order_by(Issue.created_at.desc()).limit(limit)
         return [self.issue_to_dict(iss) for iss in q]
 
     def get_popular(self, user_id='', limit=-1):
         if user_id:
-            q = Issue.select().where(Issue.user_id == user_id).order_by(Issue.score).limit(limit)
+            q = Issue.select().where(Issue.user_id == user_id).order_by(Issue.score.desc()).limit(limit)
         else:
-            q = Issue.select().order_by(Issue.score).limit(limit)
+            q = Issue.select().order_by(Issue.score.desc()).limit(limit)
         return [self.issue_to_dict(iss) for iss in q]
 
-    def aggregate_per_month(self, user_id='', month=6, use_genre=True):
+    def aggregate_per_month(self, user_id='', month=5, use_genre=True):
         now = datetime.now()
         start_time = now - dateutil.relativedelta.relativedelta(months=month)
         start_time_str = start_time.strftime('%Y-%m-01 00:00:00+00:00')
@@ -121,7 +122,7 @@ class IndicatorApi(DataApi):
 
         return stat
 
-    def aggregate_kinds(self, user_id='', month=6, use_genre=True):
+    def aggregate_kinds(self, user_id='', month=5, use_genre=True):
         ym_stat = self.aggregate_per_month(user_id, month, use_genre)
         stat = Counter()
         for kind_count in ym_stat.values():

@@ -10,7 +10,7 @@
 
 <h1 class="title top" >@{{profile["user_id"]}}</h1>
 
-<div class="container">
+<div class="container content-area">
   <div class="columns">
     <div class="column">
         <article class="media">
@@ -40,14 +40,17 @@
     </div>
     <div class="column">
     　　<h1 class="title">
-         <span class="score">{{profile['total_score']}}</span>pt
+         <span class="score">{{profile['total_score']}}</span>score
          <span style="font-size: 2.0em;">&nbsp;&nbsp;</span>
          <span class="score">{{profile['post_count']}}</span>posts
        </h1>
     </div>
   </div>
-  <hr/>
-  
+</div>
+
+<hr/>
+
+<div class="container content-area">
   <div class="columns">
     <div class="column">
         <div style="padding-left:10px; padding-right:10px;height:250px">
@@ -60,14 +63,18 @@
         </div>
     </div>
   </div>
-  
+</div>
+
+<br/><br/>
+
+<div class="container content-area">
   <div class="columns">
     {% for kind in ("recent", "popular") %}
-      <div class="column">
+      <div class="column is-half">
         <h3 class="title is-3">{{ "Recent" if kind == "recent" else "Popular" }}</h3>
         {% for p in posts[kind] %}
         <article class="media">
-          <figure class="media-left">
+          <figure class="media-left is-hidden-mobile">
             <p class="image is-32x32">
               <meter value="{{p['score']}}" low="50" min="0" max="100">score</meter>
             </p>
@@ -75,7 +82,8 @@
           <div class="media-content">
             <div class="content">
               <a href="{{p['url']}}" target="_paper">{{p["title"]}}</a><br/>
-              <small style="margin-right:10px">{{p['created_at'].split("T")[0]}}</small>
+              <p>{{p['headline']}}</p>
+              <small style="margin-right:10px">{{p['created_at'].split("+")[0]}}</small>
               {% for label in p["labels"] %}
                 <small class="axlabel {{label.lower()}}">{{label}}</small>
               {% end %}
