@@ -38,10 +38,10 @@ class BaseModel(Model):
 class Issue(BaseModel):
     title = CharField()
     url = CharField(unique=True)
-    user_id = CharField()
+    user_id = CharField(index=True)
     avatar_url = CharField()
     score = IntegerField()
-    created_at = DateTimeField()
+    created_at = DateTimeField(index=True)
     body = TextField()
 
     @classmethod
