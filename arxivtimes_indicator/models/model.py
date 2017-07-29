@@ -73,6 +73,8 @@ class IndicatorApi(DataApi):
         labels = [lb["name"] for lb in issue_dict["labels"]]
         issue_dict["labels"] = labels
         issue_dict["genres"] = self.labels_to_genres(labels)
+        if isinstance(issue_dict["created_at"], datetime):
+            issue_dict["created_at"] = issue_dict["created_at"].strftime('%Y-%m-%dT%H:%M:%SZ')
         return issue_dict
 
     def get_recent(self, user_id='', limit=-1):
