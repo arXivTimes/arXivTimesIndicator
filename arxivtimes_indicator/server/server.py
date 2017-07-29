@@ -2,7 +2,6 @@ import os
 import json
 import tornado.web
 import requests
-import pandas as pd
 from arxivtimes_indicator.models.model import IndicatorApi
 from arxivtimes_indicator.server.__dummy_data import DummyData
 
