@@ -14,6 +14,8 @@ from arxivtimes_indicator.data_api import DataApi
 db = SqliteDatabase(os.path.join(os.path.join(os.path.dirname(__file__), '../../'), 'database.db'))
 if "tests.models" in sys.modules:
     db = SqliteDatabase(os.path.join(os.path.join(os.path.dirname(__file__), '../../tests/'), 'test_db.db'))
+if os.getenv("DATABASE_URL", ""):
+    db = connect(os.getenv("DATABASE_URL", ""))
 
 
 def create_tables():

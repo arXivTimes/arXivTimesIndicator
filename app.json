@@ -1,0 +1,34 @@
+{
+  "name": "arXivTimes Indicator",
+  "description": "Show the indicators in the arXivTimes",
+  "keywords": [
+    "arXiv",
+    "Python",
+    "Machine Learning"
+  ],
+  "website": "https://github.com/chakki-works/arXivTimesIndicator",
+  "repository": "https://github.com/chakki-works/arXivTimesIndicator",
+  "logo": "https://raw.githubusercontent.com/chakki-works/arXivTimesIndicator/master/arxivtimes_indicator/server/static/images/arXivTimesLogo.PNG",
+  "env": {
+    "SECRET_TOKEN": {
+      "description": "A secret key for verifying the integrity of signed cookies.",
+      "generator": "secret"
+    },
+    "CONSUMER_KEY": {
+      "description": "Twitter API Consumer Key"
+    },
+    "CONSUMER_SECRET": {
+      "description": "Twitter API Consumer Secret"
+    },
+    "ACCESS_TOKEN": {
+      "description": "Twitter Access Token Key"
+    },
+    "ACCESS_TOKEN_SECRET": {
+      "description": "Twitter Access Token Secret"
+    }
+  },
+  "addons": [
+    "heroku-postgresql",
+    "scheduler"
+  ]
+}
