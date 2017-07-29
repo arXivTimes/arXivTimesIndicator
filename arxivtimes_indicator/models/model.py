@@ -99,7 +99,10 @@ class IndicatorApi(DataApi):
             issues = Issue.select().where(Issue.created_at >= start_time_str)
         stat = defaultdict(Counter)
         for issue in issues:
-            key = dateutil.parser.parse(issue.created_at).strftime('%Y/%m')
+            if isinstance(issue.created_at, datetime):
+                key = issue.created_at.strftime('%Y/%m')
+            else:
+                key = dateutil.parser.parse(issue.created_at).strftime('%Y/%m')
             issue_d = self.issue_to_dict(issue)
             kinds = issue_d["genres"] if use_genre else issue_d["labels"]
             for k in kinds:
