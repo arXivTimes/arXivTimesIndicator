@@ -3,3 +3,4 @@ peewee==2.10.1
 tornado==4.5.1
 tweepy==3.5.0
 psycopg2==2.7.3
+python-dateutil==2.6.1
