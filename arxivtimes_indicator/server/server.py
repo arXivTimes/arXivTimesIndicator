@@ -70,8 +70,8 @@ class UserHandler(tornado.web.RequestHandler):
 
         profile["total_score"] = api.get_user_total_score(user_id)
         profile["post_count"] = api.get_user_post_count(user_id)
-        recent = api.get_recent(user_id=user_id)[:DEFAULT_LIMIT]
-        popular = api.get_popular(user_id=user_id)[:DEFAULT_LIMIT]
+        recent = api.get_recent(user_id=user_id, limit=DEFAULT_LIMIT)
+        popular = api.get_popular(user_id=user_id, limit=DEFAULT_LIMIT)
         posts["recent"] = recent
         posts["popular"] = popular
 
