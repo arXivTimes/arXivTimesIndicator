@@ -4,3 +4,4 @@ tornado==4.5.1
 tweepy==3.5.0
 psycopg2==2.7.3
 python-dateutil==2.6.1
+numpy==1.13.1
