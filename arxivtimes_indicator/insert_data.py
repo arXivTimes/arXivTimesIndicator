@@ -2,10 +2,11 @@ from __future__ import absolute_import
 import dateutil.parser
 from arxivtimes_indicator.data.github import fetch_issues
 from arxivtimes_indicator.data.twitter import fetch_tweets, rank_paper
-from arxivtimes_indicator.models.model import Issue, Label
+from arxivtimes_indicator.models.model import Issue, Label, create_tables
 
 
 def main():
+    create_tables()
     issues = fetch_issues()
     tweets = fetch_tweets(count=400)
 
