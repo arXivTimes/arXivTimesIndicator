@@ -15,6 +15,8 @@ def main():
     from pprint import pprint
     pprint(urls)
     cnt = 0
+    updates = 0
+    inserts = 0
     for issue in issues:
         url        = issue['html_url']
         title      = issue['title']
@@ -42,12 +44,14 @@ def main():
         query = Issue.select().where(Issue.url == url)
         if query.exists():
             Issue.update(score=score).where(Issue.url == url).execute()
+            updates += 1
         else:
             issue.save()
             for label in labels:
                 label.issue = issue
                 label.save()
-    print(cnt)
+            inserts += 1
+    print("Inserts={}, Updates={}, score error={}".format(inserts, updates, cnt))
 
 
 if __name__ == '__main__':
