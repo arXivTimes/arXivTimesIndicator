@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block body %}
+<div class="container">
+
+    <div style="margin:auto; max-width:640px">
+        <h1 class="title" style="text-align:center"><b>{{ user_id }}</b> has not posted yet.</h1>
+        <p style="text-align:center">
+            <a href="/">back to top</a>
+        </p>
+        <figure class="image is-4by3">
+            <img src="{{ static_url('images/not_yet.jpg') }}">
+        </figure>
+        Photo by <a href="https://flic.kr/p/e4c1od">Ketzirah Lesser & Art Drauglis</a>
+    </div>
+
+</div>
+
+{% end %}
