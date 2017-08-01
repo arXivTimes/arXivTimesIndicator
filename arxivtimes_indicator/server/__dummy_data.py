@@ -28,7 +28,7 @@ class DummyData(DataApi):
                 posts = [p for p in posts if p["user_id"] == user_id]
         return posts
 
-    def get_popular(self, user_id="", limit=-1):
+    def get_qualified(self, user_id="", limit=-1):
         ps = self.get_recent(user_id, limit)
         ps = sorted(ps, key=lambda p: p["score"], reverse=True)
         return ps

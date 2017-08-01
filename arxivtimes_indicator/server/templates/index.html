@@ -74,7 +74,7 @@
               </p>
               <p class="control">
                   <a v-bind:class="['button', {'is-focused': !isRecent}]" v-on:click="toggleList">
-                  <span>Popular</span>
+                  <span>Quality</span>
                   </a>
               </p>
           </div>
@@ -103,7 +103,7 @@
           <div>
             <div class="columns">
               <div class="column is-three-quarters">
-                rate:<strong>[[paper.score]]</strong>
+                score:<strong>[[paper.score]]</strong>
                 <img class="user-icon" v-bind:src="paper.avatar_url"/>
                 <a v-bind:href="'user/' + [[paper.user_id]]" target="_user" style="line-height:1em">[[paper.user_id]]</a>
                 <span style="margin-right:10px">[[paper.created_at | formatDate]]</span>

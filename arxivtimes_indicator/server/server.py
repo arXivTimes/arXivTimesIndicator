@@ -16,11 +16,11 @@ class IndexHandler(tornado.web.RequestHandler):
 
         api = IndicatorApi() if not DummyData.is_dummy_request(self) else DummyData()
         recent = api.get_recent(limit=DEFAULT_LIMIT)
-        popular = api.get_popular(limit=DEFAULT_LIMIT)
+        quality = api.get_qualified(limit=DEFAULT_LIMIT)
         stat = api.aggregate_per_month()
         posts = {
             "recent": recent,
-            "popular": popular
+            "quality": quality
         }
         posts = json.dumps(posts)
         stat = json.dumps(stat)
@@ -63,7 +63,7 @@ class UserHandler(tornado.web.RequestHandler):
         except Exception as ex:
             print(ex)
         
-        posts = {"recent":[], "popular":[]}
+        posts = {"recent":[], "quality":[]}
         stats = {"monthly":{}, "kinds": {}}
 
         api = IndicatorApi() if not DummyData.is_dummy_request(self) else DummyData()
@@ -71,9 +71,9 @@ class UserHandler(tornado.web.RequestHandler):
         profile["total_score"] = api.get_user_total_score(user_id)
         profile["post_count"] = api.get_user_post_count(user_id)
         recent = api.get_recent(user_id=user_id, limit=DEFAULT_LIMIT)
-        popular = api.get_popular(user_id=user_id, limit=DEFAULT_LIMIT)
+        quality = api.get_qualified(user_id=user_id, limit=DEFAULT_LIMIT)
         posts["recent"] = recent
-        posts["popular"] = popular
+        posts["quality"] = quality
 
         monthly = api.aggregate_per_month(user_id)
         kinds = api.aggregate_kinds(user_id)

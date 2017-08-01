@@ -30,7 +30,7 @@ var instance = new Vue({
             }
         },
         filteredList: function(){
-            var listType = this.isRecent ? "recent" : "popular";
+            var listType = this.isRecent ? "recent" : "quality";
             var filtered = this.posts[listType];
             if(filtered === undefined){
                 filtered = [];

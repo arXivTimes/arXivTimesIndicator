@@ -147,13 +147,13 @@ class TestDataAPI(unittest.TestCase):
         issues = data_api.get_recent(user_id='user_3', limit=-1)
         self.assertTrue(len(issues) < self.max_count)
 
-    def test_get_popular(self):
+    def test_get_qualified(self):
         data_api = IndicatorApi()
-        issues = data_api.get_popular(user_id='', limit=-1)
+        issues = data_api.get_qualified(user_id='', limit=-1)
         self.assertEqual(len(issues), self.max_count)
-        issues = data_api.get_popular(user_id='', limit=10)
+        issues = data_api.get_qualified(user_id='', limit=10)
         self.assertEqual(len(issues), 10)
-        issues = data_api.get_popular(user_id='user_3', limit=-1)
+        issues = data_api.get_qualified(user_id='user_3', limit=-1)
         self.assertTrue(len(issues) < self.max_count)
 
     def test_aggregate_per_month(self):

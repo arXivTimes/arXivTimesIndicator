@@ -84,7 +84,7 @@ class IndicatorApi(DataApi):
             q = Issue.select().order_by(Issue.created_at.desc()).limit(limit)
         return [self.issue_to_dict(iss) for iss in q]
 
-    def get_popular(self, user_id='', limit=-1):
+    def get_qualified(self, user_id='', limit=-1):
         if user_id:
             q = Issue.select().where(Issue.user_id == user_id).order_by(Issue.score.desc()).limit(limit)
         else:
