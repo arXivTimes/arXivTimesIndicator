@@ -101,6 +101,7 @@ ENV/
 .mypy_cache/
 
 .DS_Store
+.vscode
 /data
 /reports
 /arxivtimes_indicator/server/_data

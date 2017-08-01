@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+<div class="container">
+    <h1 class="title">{{ status_code }}</h1>
+
+    {% if err_detail %}
+    <pre class="notification">
+        {{ err_detail }}
+    </pre>
+    {% end %}
+
+    <br/>
+    <a href="/">back to top</a>
+</div>
+
+{% end %}

@@ -28,9 +28,9 @@ class DataApi():
         """
         raise Exception("Have to implements in DataApi subclass.")
 
-    def get_popular(self, user_id="", limit=-1):
+    def get_qualified(self, user_id="", limit=-1):
         """
-        Get Recent Popular
+        Get Qualified
 
         Args:
             user_id: to filter the records by user_id

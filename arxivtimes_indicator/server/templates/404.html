@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block body %}
+<div class="container">
+
+    <div style="margin:auto; max-width:640px">
+        <h1 class="title" style="text-align:center">404</h1>
+        <p style="font-weight:bold">
+            The requested page does not exist: 
+            <a href="/">back to top</a>
+        </p>
+        <figure class="image is-4by3">
+            <img src="{{ static_url('images/404.jpg') }}">
+        </figure>
+        Photo by <a href="https://flic.kr/p/fJoXVc">Eugene Kim</a>
+    </div>
+
+</div>
+
+{% end %}
