@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="{{ static_url('images/favicon.ico') }}" type="image/x-icon">
     <link rel="icon" href="{{ static_url('images/favicon.ico') }}" type="image/x-icon">
-    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/bulma/0.4.2/css/bulma.min.css">
+    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/bulma/0.5.0/css/bulma.min.css">
     <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="{{ static_url('css/base.css') }}" type="text/css"/>
     {% block head %}{% end %}
@@ -25,48 +25,54 @@
 </head>
 <body class="layout-documentation page-layout" style="zoom: 1;">
     <div class="hero-head">
-    <nav class="nav">
-        <div class="nav-left">
-            <a class="nav-item" href="/">
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <a class="navbar-item" href="/">
                 <img src="{{ static_url('images/arXivTimesLogo.PNG') }}" alt="arXivTimes logo">
             </a>
+
+            <span class="navbar-burger burger" data-target="navMenu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </span>
+
         </div>
 
-        <div class="nav-center">
-            <a class="nav-item" href="https://github.com/arXivTimes/arXivTimes" target="_github">
-                <span class="icon">
-                    <i class="fa fa-github"></i>
-                </span>
-            </a>
-            <a class="nav-item" href="https://medium.com/@arxivtimes" target="_medium">
-                <span class="icon">
-                    <i class="fa fa-twitter"></i>
-                </span>
-            </a>
-            <a class="nav-item" href="https://twitter.com/arxivtimes" target="_twitter">
-                <span class="icon">
-                    <i class="fa fa-medium" aria-hidden="true"></i>
-                </span>
-            </a>
-        </div>
+        <div class="navbar-menu">
+            <div class="navbar-start">
+                <a class="navbar-item" href="https://github.com/arXivTimes/arXivTimes" target="_github">
+                    <span class="icon">
+                        <i class="fa fa-github"></i>
+                    </span>
+                </a>
+                <a class="navbar-item" href="https://twitter.com/arxivtimes" target="_medium">
+                    <span class="icon">
+                        <i class="fa fa-twitter"></i>
+                    </span>
+                </a>
+                <a class="navbar-item" href="https://medium.com/@arxivtimes" target="_twitter">
+                    <span class="icon">
+                        <i class="fa fa-medium" aria-hidden="true"></i>
+                    </span>
+                </a>
+            </div>
 
-        <!-- This "nav-toggle" hamburger menu is only visible on mobile -->
-        <!-- You need JavaScript to toggle the "is-active" class on "nav-menu" -->
-        <span class="nav-toggle">
-            <span></span>
-            <span></span>
-            <span></span>
-        </span>
-
-        <!-- This "nav-menu" is hidden on mobile -->
-        <!-- Add the modifier "is-active" to display it on mobile -->
-        <div class="nav-right nav-menu">
-            <a class="nav-item" href="/">
-                Home
-            </a>
-            <a class="nav-item" href="https://medium.com/@arxivtimes/arxivtimes%E3%81%AE%E3%83%80%E3%83%83%E3%82%B7%E3%83%A5%E3%83%9C%E3%83%BC%E3%83%89%E3%82%92%E3%83%AA%E3%83%AA%E3%83%BC%E3%82%B9%E3%81%97%E3%81%BE%E3%81%97%E3%81%9F-4f2f7190b7e8" target="_guide">
-                About
-            </a>
+            <div id="navMenu" class="navbar-end">
+                <a class="navbar-item" href="/">
+                    Home
+                </a>
+                <a class="navbar-item" href="https://medium.com/@arxivtimes/arxivtimes%E3%81%AE%E3%83%80%E3%83%83%E3%82%B7%E3%83%A5%E3%83%9C%E3%83%BC%E3%83%89%E3%82%92%E3%83%AA%E3%83%AA%E3%83%BC%E3%82%B9%E3%81%97%E3%81%BE%E3%81%97%E3%81%9F-4f2f7190b7e8" target="_guide">
+                    About
+                </a>
+                <div class="navbar-item">
+                    <p class="control">
+                        <a class="button is-primary" target="_github" href="https://github.com/arXivTimes/arXivTimes/issues">
+                        <span>Post</span>
+                        </a>
+                    </p>
+                </div>
+            </div>
         </div>
     </nav>
     </div>
