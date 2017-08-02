@@ -26,7 +26,7 @@ var instance = new Vue({
             if (this.selected in this.genreNames){
                 return this.genreNames[this.selected];
             }else{
-                return "All Genre";
+                return "All Genres";
             }
         },
         filteredList: function(){
