@@ -10,14 +10,21 @@ def fetch_issues():
     url = 'https://api.github.com/repos/arXivTimes/arXivTimes/issues?per_page=100'
     issues = []
     cnt = 0
-    while cnt < 20:
+    has_next = True
+    while cnt < 20 and has_next:
         cnt += 1
         res = requests.get(url)
-        issues.extend(res.json())
-        if 'next' in res.links:
-            url = res.links['next']['url']
+        if res.ok:
+            issues.extend(res.json())
+            if 'next' in res.links:
+                url = res.links['next']['url']
+            else:
+                has_next = False
         else:
-            return issues
+            print("fetch issue is failed. {}".format(res.json()))
+            has_next = False
+
+    return issues
 
 
 def tally_by_users(issues):
