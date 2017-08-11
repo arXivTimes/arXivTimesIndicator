@@ -1,3 +1,7 @@
+import os
+import sys
+sys.path.append(os.path.join(os.path.dirname(__file__), "../../"))
+
 import unittest
 
 from arxivtimes_indicator.data.github import *
@@ -33,3 +37,7 @@ class TestGitHub(unittest.TestCase):
         issues = fetch_issues()
         filtered_issues = filter_issue_by_ym(issues)
         self.assertTrue(len(filtered_issues) <= len(issues))
+
+
+if __name__ == "__main__":
+    unittest.main()
