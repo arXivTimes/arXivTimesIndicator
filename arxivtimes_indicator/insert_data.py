@@ -14,6 +14,7 @@ def main():
 
     scores, urls = rank_paper(tweets)
     url_score = dict(zip(urls, scores))
+    #url_score = {}
     from pprint import pprint
     pprint(urls)
     cnt = 0
@@ -54,17 +55,20 @@ def main():
 
         query = Issue.select().where(Issue.url == url)
         if query.exists():
-            Issue.update(score=score).where(Issue.url == url).execute()
+            issue = query.get()
+            Issue.update(score=score, title=title, body=body).where(Issue.url == url).execute()
+            Label.delete().where(Label.issue == issue).execute()
             updates += 1
         else:
             issue.save()
-            for label in labels:
-                label.issue = issue
-                label.save()
             inserts += 1
+
+        for label in labels:
+            label.issue = issue
+            label.save()
+
     print("Inserts={}, Updates={}, score error={}".format(inserts, updates, cnt))
 
 
 if __name__ == '__main__':
     main()
-
