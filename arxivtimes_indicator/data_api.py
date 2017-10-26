@@ -3,6 +3,7 @@ class DataApi():
         "ComputerVision": "cv",
         "NLP": "nlp",
         "Dialogue": "nlp",
+        "Summarization": "nlp",
         "Optimization": "opt",
         "ReinforcementLearning": "rl",
         "AudioRecognition": "audio",
