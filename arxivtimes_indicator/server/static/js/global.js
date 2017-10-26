@@ -3,7 +3,8 @@ var GENRE_NAMES = {
     "nlp": "Natural Language Processing",
     "opt": "Optimization",
     "rl": "Reinforcement Learning",
-    "audio": "Audio Processing"
+    "audio": "Audio Processing",
+    "other": "Other"
 };
 
 var GENRE_COLOR = {
@@ -11,7 +12,8 @@ var GENRE_COLOR = {
     "nlp": "#c2e0c6",
     "opt": "#deb887",
     "rl": "#e99695",
-    "audio": "#d8bfd8"
+    "audio": "#d8bfd8",
+    "other": "whitesmoke"
 };
 
 var CHART_BORDER = 16;

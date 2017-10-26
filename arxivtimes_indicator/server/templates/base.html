@@ -24,13 +24,14 @@
 　　</script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            var $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+            var $burgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
             if ($burgers.length > 0) {
                 $burgers.forEach(function ($el) {
                     $el.addEventListener('click', function () {
                         var target = $el.dataset.target;
                         var $target = document.getElementById(target);
-                        $el.classList.toggle('is-active');
+                        document.getElementById("navMenu").classList.toggle("is-active")
+                        //$el.classList.toggle('is-active');
                         $target.classList.toggle('is-active');
                     });
                 });
@@ -73,7 +74,7 @@
                 </a>
             </div>
 
-            <div id="navMenu" class="navbar-end">
+            <div class="navbar-end">
                 <a class="navbar-item" href="/">
                     Home
                 </a>
