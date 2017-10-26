@@ -21,7 +21,22 @@
 
   　　　ga('create', 'UA-103813732-1', 'auto');
   　　　ga('send', 'pageview');
-　　　</script>
+　　</script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+            if ($burgers.length > 0) {
+                $burgers.forEach(function ($el) {
+                    $el.addEventListener('click', function () {
+                        var target = $el.dataset.target;
+                        var $target = document.getElementById(target);
+                        $el.classList.toggle('is-active');
+                        $target.classList.toggle('is-active');
+                    });
+                });
+            }
+        })
+    </script>
 </head>
 <body class="layout-documentation page-layout" style="zoom: 1;">
     <div class="hero-head">
@@ -39,7 +54,7 @@
 
         </div>
 
-        <div class="navbar-menu">
+        <div id="navMenu" class="navbar-menu">
             <div class="navbar-start">
                 <a class="navbar-item" href="https://github.com/arXivTimes/arXivTimes" target="_github">
                     <span class="icon">
