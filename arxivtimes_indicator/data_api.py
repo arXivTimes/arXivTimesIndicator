@@ -12,7 +12,9 @@ class DataApi():
 
     @classmethod
     def labels_to_genres(cls, labels):
-        genres = ["other" if lb not in cls.LABEL_TO_GENRE else cls.LABEL_TO_GENRE[lb] for lb in labels]
+        genres = ["" if lb not in cls.LABEL_TO_GENRE else cls.LABEL_TO_GENRE[lb] for lb in labels]
+        if len(genres) == 0:
+            genres = ["other"]
         genres = [g for g in genres if g]
         return genres
 
