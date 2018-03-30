@@ -1,8 +1,10 @@
 class DataApi():
     LABEL_TO_GENRE = {
         "ComputerVision": "cv",
+        "ImageGeneration": "cv",
         "NLP": "nlp",
         "Dialogue": "nlp",
+        "Dialogue/QA": "nlp",
         "Summarization": "nlp",
         "Optimization": "opt",
         "ReinforcementLearning": "rl",
