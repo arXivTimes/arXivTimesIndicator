@@ -22,12 +22,12 @@ meter::-webkit-meter-even-less-good-value {
     margin-right:5px;
 }
 
-.axlabel.dialogue, .axlabel.nlp{
+.axlabel.nlp, .axlabel.dialogue, .axlabel.dialogue\/qa, .axlabel.summarization{
     border: 1px solid #c2e0c6;
     background-color: #c2e0c6;
 }
 
-.axlabel.computervision{
+.axlabel.computervision, .axlabel.imagegeneration{
     border: 1px solid #fef2c0;
     background-color: #fef2c0;
 }
@@ -42,7 +42,7 @@ meter::-webkit-meter-even-less-good-value {
     background-color: #fbca04;
 }
 
-.axlabel.datarepresentation{
+.axlabel.datarepresentation, .axlabel.interpretation{
     border: 1px solid #fffafa;
     background-color: #fffafa;
 }
