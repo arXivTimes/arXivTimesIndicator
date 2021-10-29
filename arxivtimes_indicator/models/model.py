@@ -21,8 +21,7 @@ if "tests.models" in sys.modules:
     )
 if os.getenv("DATABASE_URL", ""):
     db = connect(os.getenv("DATABASE_URL", ""))
-    print(db.__dict__)
-    db.set_autocommit(True)
+    # db.set_autocommit(True) # default auto_commit: https://docs.peewee-orm.com/en/latest/peewee/database.html
 
 
 def create_tables():
