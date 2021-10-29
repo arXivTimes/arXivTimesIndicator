@@ -1,22 +1,27 @@
 import os
 import sys
-from collections import defaultdict, Counter
+from collections import Counter, defaultdict
 from datetime import datetime
 
 import dateutil.parser
 import dateutil.relativedelta
-from peewee import *
-from playhouse.shortcuts import model_to_dict
-from playhouse.db_url import connect
-
 from arxivtimes_indicator.data_api import DataApi
+from peewee import *
+from playhouse.db_url import connect
+from playhouse.shortcuts import model_to_dict
 
-
-db = SqliteDatabase(os.path.join(os.path.join(os.path.dirname(__file__), '../../'), 'database.db'))
+db = SqliteDatabase(
+    os.path.join(os.path.join(os.path.dirname(__file__), "../../"), "database.db")
+)
 if "tests.models" in sys.modules:
-    db = SqliteDatabase(os.path.join(os.path.join(os.path.dirname(__file__), '../../tests/'), 'test_db.db'))
+    db = SqliteDatabase(
+        os.path.join(
+            os.path.join(os.path.dirname(__file__), "../../tests/"), "test_db.db"
+        )
+    )
 if os.getenv("DATABASE_URL", ""):
     db = connect(os.getenv("DATABASE_URL", ""))
+    print(db.__dict__)
     db.set_autocommit(True)
 
 
@@ -50,8 +55,8 @@ class Issue(BaseModel):
 
     @classmethod
     def extract_headline(cls, body):
-        headline_left = len('## 一言でいうと')
-        headline_right = body.find('###')  # until next section
+        headline_left = len("## 一言でいうと")
+        headline_right = body.find("###")  # until next section
         if headline_right > 0:
             headline = body[headline_left:headline_right].strip()
         else:
@@ -60,12 +65,11 @@ class Issue(BaseModel):
 
 
 class Label(BaseModel):
-    issue = ForeignKeyField(Issue, related_name='labels')
+    issue = ForeignKeyField(Issue, related_name="labels")
     name = CharField()
 
 
 class IndicatorApi(DataApi):
-
     def issue_to_dict(self, issue):
         issue_dict = model_to_dict(issue, backrefs=True)
         headline = Issue.extract_headline(issue_dict["body"])
@@ -74,37 +78,53 @@ class IndicatorApi(DataApi):
         issue_dict["labels"] = labels
         issue_dict["genres"] = self.labels_to_genres(labels)
         if isinstance(issue_dict["created_at"], datetime):
-            issue_dict["created_at"] = issue_dict["created_at"].strftime('%Y-%m-%dT%H:%M:%SZ')
+            issue_dict["created_at"] = issue_dict["created_at"].strftime(
+                "%Y-%m-%dT%H:%M:%SZ"
+            )
         return issue_dict
 
-    def get_recent(self, user_id='', limit=-1):
+    def get_recent(self, user_id="", limit=-1):
         if user_id:
-            q = Issue.select().where(Issue.user_id==user_id).order_by(Issue.created_at.desc()).limit(limit)
+            q = (
+                Issue.select()
+                .where(Issue.user_id == user_id)
+                .order_by(Issue.created_at.desc())
+                .limit(limit)
+            )
         else:
             q = Issue.select().order_by(Issue.created_at.desc()).limit(limit)
         return [self.issue_to_dict(iss) for iss in q]
 
-    def get_qualified(self, user_id='', limit=-1):
+    def get_qualified(self, user_id="", limit=-1):
         if user_id:
-            q = Issue.select().where(Issue.user_id == user_id).order_by(Issue.score.desc()).limit(limit)
+            q = (
+                Issue.select()
+                .where(Issue.user_id == user_id)
+                .order_by(Issue.score.desc())
+                .limit(limit)
+            )
         else:
             q = Issue.select().order_by(Issue.score.desc()).limit(limit)
         return [self.issue_to_dict(iss) for iss in q]
 
-    def aggregate_per_month(self, user_id='', month=5, use_genre=True):
+    def aggregate_per_month(self, user_id="", month=5, use_genre=True):
         now = datetime.now()
         start_time = now - dateutil.relativedelta.relativedelta(months=month)
-        start_time_str = start_time.strftime('%Y-%m-01 00:00:00+00:00')
+        start_time_str = start_time.strftime("%Y-%m-01 00:00:00+00:00")
         if user_id:
-            issues = Issue.select().where(Issue.user_id == user_id).where(Issue.created_at >= start_time_str)
+            issues = (
+                Issue.select()
+                .where(Issue.user_id == user_id)
+                .where(Issue.created_at >= start_time_str)
+            )
         else:
             issues = Issue.select().where(Issue.created_at >= start_time_str)
         stat = defaultdict(Counter)
         for issue in issues:
             if isinstance(issue.created_at, datetime):
-                key = issue.created_at.strftime('%Y/%m')
+                key = issue.created_at.strftime("%Y/%m")
             else:
-                key = dateutil.parser.parse(issue.created_at).strftime('%Y/%m')
+                key = dateutil.parser.parse(issue.created_at).strftime("%Y/%m")
             issue_d = self.issue_to_dict(issue)
             kinds = issue_d["genres"] if use_genre else issue_d["labels"]
             for k in kinds:
@@ -131,16 +151,21 @@ class IndicatorApi(DataApi):
 
         return stat
 
-    def aggregate_kinds(self, user_id='', month=5, use_genre=True):
+    def aggregate_kinds(self, user_id="", month=5, use_genre=True):
         ym_stat = self.aggregate_per_month(user_id, month, use_genre)
         stat = Counter()
         for kind_count in ym_stat.values():
             stat += kind_count
-        
+
         return dict(stat)
 
     def get_user_total_score(self, user_id):
-        score = Issue.select(fn.SUM(Issue.score)).where(Issue.user_id == user_id).group_by(Issue.user_id).scalar()
+        score = (
+            Issue.select(fn.SUM(Issue.score))
+            .where(Issue.user_id == user_id)
+            .group_by(Issue.user_id)
+            .scalar()
+        )
         return score
 
     def get_user_post_count(self, user_id):
